@@ -37,7 +37,7 @@ Route::get('/polls/search/{title}', [PollController::class, 'search']);
 
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
-  Route::post('/polls', [PollController::class, 'create']);
+  Route::post('/polls', [PollController::class, 'store']);
   Route::put('/polls/{id}', [PollController::class, 'update']);
   Route::delete('/polls/{id}', [PollController::class, 'destroy']);
 });

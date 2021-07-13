@@ -17,7 +17,7 @@ class AuthController extends Controller
       'password' => 'required|string|confirmed'
     ]);
 
-    $user = User::created([
+    $user = User::create([ // not created 
       'name' => $fields['name'],
       'email' => $fields['email'],
       'password' => bcrypt($fields['password'])
