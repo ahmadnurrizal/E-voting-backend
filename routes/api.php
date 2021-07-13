@@ -19,8 +19,9 @@ use Illuminate\Support\Facades\Route;
 
 // Route::resource('polls', PollController::class);
 
-// Public Routes
+// Public Routes 
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 Route::get('/polls', [PollController::class, 'index']);
 Route::get('/polls/{id}', [PollController::class, 'show']);
 Route::get('/polls/search/{title}', [PollController::class, 'search']);
@@ -35,11 +36,12 @@ Route::get('/polls/search/{title}', [PollController::class, 'search']);
 //   ]); 
 // });
 
-// Protected Routes
+// Protected Routes (need a valid token to access)
 Route::group(['middleware' => ['auth:sanctum']], function () {
   Route::post('/polls', [PollController::class, 'create']);
   Route::put('/polls/{id}', [PollController::class, 'update']);
   Route::delete('/polls/{id}', [PollController::class, 'destroy']);
+  Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
