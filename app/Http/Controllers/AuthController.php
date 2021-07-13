@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -17,7 +18,7 @@ class AuthController extends Controller
       'password' => 'required|string|confirmed'
     ]);
 
-    $user = User::created([
+    $user = User::create([
       'name' => $fields['name'],
       'email' => $fields['email'],
       'password' => bcrypt($fields['password'])
