@@ -15,7 +15,7 @@ class CreatePollsTable extends Migration
   {
     Schema::create('polls', function (Blueprint $table) {
       $table->id();
-      $table->integer('user_id');
+      $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
       $table->string('title');
       $table->string('description');
       $table->string('deadline');
