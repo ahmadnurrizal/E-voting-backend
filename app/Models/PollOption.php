@@ -11,7 +11,7 @@ class PollOption extends Model
 
   protected $fillable = [
     'poll_id',
-    'name',
+    'option',
     'image_path'
   ];
 }

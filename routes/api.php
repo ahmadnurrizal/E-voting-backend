@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Models\Poll;
 use App\Http\Controllers\PollController;
 use App\Http\Controllers\PollOptionController;
+use App\Http\Controllers\VoterController;
 use App\Models\PollOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +29,7 @@ Route::get('/polls', [PollController::class, 'index']);
 Route::get('/polls/{id}', [PollController::class, 'show']);
 Route::get('/polls/search/{title}', [PollController::class, 'search']);
 
-// Route::post('/poll-options', [PollOptionController::class, 'store']);
+
 // Route::get('/poll-options', [PollOptionController::class, 'index']);
 
 // Protected Routes (need a valid token to access)
@@ -37,6 +38,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
   Route::put('/polls/{id}', [PollController::class, 'update']);
   Route::delete('/polls/{id}', [PollController::class, 'destroy']);
   Route::post('/logout', [AuthController::class, 'logout']);
+  Route::post('/polls/{id}/vote', [VoterController::class, 'store']);
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

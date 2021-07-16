@@ -33,16 +33,22 @@ class PollController extends Controller
       'deadline' => 'required',
     ]);
 
+    // insert data to polls table
     $user = auth()->user();
     $data = $request->all();
     $data['user_id'] = $user->id; //auto fill user_id base on user when creating polling
-
     $poll = Poll::create($data);
-    $pollOption = PollOption::create([
-      'name' => $request->input('name'),
-      'image_path' => $request->input('image_path'),
-      'poll_id' => $poll->id
-    ]);
+
+    // insert data to poll-options table
+    $countOptions = 2; // just create 2 option
+    for ($i = 1; $i <= $countOptions; $i += 1) {
+      $pollOption = PollOption::create([
+        'option' => $request->input("option{$i}"),
+        'image_path' => $request->input("image_path{$i}"),
+        'poll_id' => $poll->id
+      ]);
+    }
+
     // return Poll::create($request->all()); // create data
     return [$pollOption, $poll]; // create data
   }
