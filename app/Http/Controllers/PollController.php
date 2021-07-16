@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Poll;
+use App\Models\PollOption;
 use Illuminate\Http\Request;
 
 class PollController extends Controller
@@ -36,8 +37,14 @@ class PollController extends Controller
     $data = $request->all();
     $data['user_id'] = $user->id; //auto fill user_id base on user when creating polling
 
+    $poll = Poll::create($data);
+    $pollOption = PollOption::create([
+      'name' => $request->input('name'),
+      'image_path' => $request->input('image_path'),
+      'poll_id' => $poll->id
+    ]);
     // return Poll::create($request->all()); // create data
-    return Poll::create($data); // create data
+    return [$pollOption, $poll]; // create data
   }
 
   /**

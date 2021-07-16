@@ -16,4 +16,9 @@ class Poll extends Model
     'deadline',
     'status'
   ];
+
+  public function pollOptions()
+  {
+    return $this->hasMany(PollOption::class);
+  }
 }

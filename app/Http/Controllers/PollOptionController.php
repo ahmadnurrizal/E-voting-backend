@@ -36,7 +36,7 @@ class PollOptionController extends Controller
    */
   public function store(Request $request)
   {
-    //
+    return PollOption::create($request->all()); // create data
   }
 
   /**
