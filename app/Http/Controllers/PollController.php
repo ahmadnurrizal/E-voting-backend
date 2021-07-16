@@ -32,7 +32,12 @@ class PollController extends Controller
       'deadline' => 'required',
     ]);
 
-    return Poll::create($request->all()); // create data
+    $user = auth()->user();
+    $data = $request->all();
+    $data['user_id'] = $user->id; //auto fill user_id base on user when creating polling
+
+    // return Poll::create($request->all()); // create data
+    return Poll::create($data); // create data
   }
 
   /**
