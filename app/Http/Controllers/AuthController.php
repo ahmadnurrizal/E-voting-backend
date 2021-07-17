@@ -63,6 +63,18 @@ class AuthController extends Controller
     return response($response, 201);
   }
 
+  public function update(Request $request, $id)
+  {
+    $user = User::find($id);
+    $user->update($request->all()); // update  data
+    return $user;
+  }
+
+  public function show($id)
+  {
+    return User::where('id', '=', $id)->get(); // search data by id
+  }
+
   public function logout(Request $request)
   {
     auth()->user()->tokens()->delete(); // Delete token (code is good, ignore error)

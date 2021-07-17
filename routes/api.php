@@ -23,22 +23,24 @@ use Illuminate\Support\Facades\Route;
 // Route::resource('polls', PollController::class);
 
 // Public Routes 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/polls', [PollController::class, 'index']);
-Route::get('/polls/{id}', [PollController::class, 'show']);
-Route::get('/polls/search/{title}', [PollController::class, 'search']);
+Route::post('/v1/register', [AuthController::class, 'register']);
+Route::post('/v1/login', [AuthController::class, 'login']);
+Route::get('/v1/users/{id}', [AuthController::class, 'show']);
+Route::get('/v1/polls', [PollController::class, 'index']);
+Route::get('/v1/polls/{id}', [PollController::class, 'show']);
+Route::get('/v1/polls/search/{title}', [PollController::class, 'search']);
 
 
 // Route::get('/poll-options', [PollOptionController::class, 'index']);
 
 // Protected Routes (need a valid token to access)
 Route::group(['middleware' => ['auth:sanctum']], function () {
-  Route::post('/polls', [PollController::class, 'store']);
-  Route::put('/polls/{id}', [PollController::class, 'update']);
-  Route::delete('/polls/{id}', [PollController::class, 'destroy']);
-  Route::post('/logout', [AuthController::class, 'logout']);
-  Route::post('/polls/{id}/vote', [VoterController::class, 'store']);
+  Route::put('/v1/users/{id}', [AuthController::class, 'update']);
+  Route::post('/v1/polls', [PollController::class, 'store']);
+  Route::put('/v1/polls/{id}', [PollController::class, 'update']);
+  Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']);
+  Route::post('/v1/logout', [AuthController::class, 'logout']);
+  Route::post('/v1/polls/{id}/vote', [VoterController::class, 'store']);
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
