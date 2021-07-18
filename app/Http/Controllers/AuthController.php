@@ -45,8 +45,11 @@ class AuthController extends Controller
     // check email
     $user = User::where('email', $fields['email'])->first();
 
+    // dd($user->password);
+
     // check password
     if (!$user || !Hash::check($fields['password'], $user->password)) {
+
       return response([
         'message' => 'Bed Creds'
       ], 401);
@@ -63,10 +66,20 @@ class AuthController extends Controller
     return response($response, 201);
   }
 
-  public function update(Request $request, $id)
+  public function update(Request $request)
   {
+
+    $request->validate([
+      'email' => 'string|unique:users,email',
+    ]);
+
+    $id = auth()->user()->id; // get id current user
     $user = User::find($id);
     $user->update($request->all()); // update  data
+    $user['password'] = bcrypt($user->password);
+
+    $user->update(array('password' => $user['password']));
+
     return $user;
   }
 

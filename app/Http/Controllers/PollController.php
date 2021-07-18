@@ -8,11 +8,19 @@ use Illuminate\Http\Request;
 
 class PollController extends Controller
 {
+  public function userPoll()
+  {
+    $id = auth()->user()->id; // get id current user
+    $poll = Poll::where('user_id', $id)->get(); // get all user's poll by user_id
+
+    return $poll;
+  }
   /**
    * Display a listing of the resource.
    *
    * @return \Illuminate\Http\Response
    */
+
   public function index()
   {
     // get all data
@@ -75,7 +83,18 @@ class PollController extends Controller
   {
     $poll = Poll::find($id);
     $poll->update($request->all()); // update  data
-    return $poll;
+
+    $pollOption = PollOption::where('poll_id', '=', $id); // find pollOption by poll_id
+    // update poll-options table
+    $countOptions = 2; // just create 2 option
+    for ($i = 1; $i <= $countOptions; $i += 1) {
+      $pollOption->update([
+        'option' => $request->input("option{$i}"),
+        'image_path' => $request->input("image_path{$i}")
+        // 'poll_id' => $poll->id
+      ]);
+      return $poll;
+    }
   }
 
   /**
