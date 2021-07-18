@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Models\Poll;
 use App\Http\Controllers\PollController;
 use App\Http\Controllers\PollOptionController;
+use App\Http\Controllers\VoterController;
 use App\Models\PollOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,21 +23,22 @@ use Illuminate\Support\Facades\Route;
 // Route::resource('polls', PollController::class);
 
 // Public Routes 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/polls', [PollController::class, 'index']);
-Route::get('/polls/{id}', [PollController::class, 'show']);
-Route::get('/polls/search/{title}', [PollController::class, 'search']);
-
-// Route::post('/poll-options', [PollOptionController::class, 'store']);
-// Route::get('/poll-options', [PollOptionController::class, 'index']);
+Route::post('/v1/register', [AuthController::class, 'register']); // register
+Route::post('/v1/login', [AuthController::class, 'login']); // login
+Route::get('/v1/users/{id}', [AuthController::class, 'show']); // get user by id
+Route::get('/v1/polls', [PollController::class, 'index']); // get all poll
+Route::get('/v1/polls/{id}', [PollController::class, 'show']); // get poll by id
+Route::get('/v1/polls/search/{title}', [PollController::class, 'search']); // get poll by title
 
 // Protected Routes (need a valid token to access)
 Route::group(['middleware' => ['auth:sanctum']], function () {
-  Route::post('/polls', [PollController::class, 'store']);
-  Route::put('/polls/{id}', [PollController::class, 'update']);
-  Route::delete('/polls/{id}', [PollController::class, 'destroy']);
-  Route::post('/logout', [AuthController::class, 'logout']);
+  Route::get('/v1/user-poll', [PollController::class, 'userPoll']); // get all poll created by id current user
+  Route::put('/v1/users', [AuthController::class, 'update']); // update user by id current user
+  Route::post('/v1/polls', [PollController::class, 'store']); // create poll
+  Route::put('/v1/polls/{id}', [PollController::class, 'update']); // update poll by id
+  Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']); // delete poll by id
+  Route::post('/v1/logout', [AuthController::class, 'logout']); // logout
+  Route::post('/v1/polls/{id}/vote', [VoterController::class, 'store']); // vote option
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

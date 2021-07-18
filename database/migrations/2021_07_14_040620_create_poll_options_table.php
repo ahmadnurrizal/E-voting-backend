@@ -16,7 +16,7 @@ class CreatePollOptionsTable extends Migration
     Schema::create('poll_options', function (Blueprint $table) {
       $table->id();
       $table->foreignId('poll_id')->constrained('polls')->onUpdate('cascade')->onDelete('cascade');
-      $table->string('name');
+      $table->string('option');
       $table->string('image_path');
       $table->timestamps();
     });
