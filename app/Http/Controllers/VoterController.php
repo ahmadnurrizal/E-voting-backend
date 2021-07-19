@@ -42,7 +42,10 @@ class VoterController extends Controller
       'poll_option_id' => $request->input('poll_option_id')
     ]);
 
-    return $voter;
+    return response()->json([
+      "status" => "success",
+      "data" => $voter
+    ]);
   }
 
   /**

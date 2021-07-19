@@ -80,12 +80,27 @@ class AuthController extends Controller
 
     $user->update(array('password' => $user['password']));
 
-    return $user;
+    return response()->json([
+      "status" => "success",
+      "data" => $user
+    ]);
   }
 
   public function show($id)
   {
-    return User::where('id', '=', $id)->get(); // search data by id
+    $user = User::where('id', '=', $id)->get(); // search data by id
+
+    if (!$user) {
+      return response()->json([
+        "status" => "error",
+        "message" => "poll not found"
+      ], 404);
+    }
+
+    return response()->json([
+      "status" => "success",
+      "data" => $user
+    ]);
   }
 
   public function logout(Request $request)

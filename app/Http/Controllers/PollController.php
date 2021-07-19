@@ -8,13 +8,6 @@ use Illuminate\Http\Request;
 
 class PollController extends Controller
 {
-  public function userPoll()
-  {
-    $id = auth()->user()->id; // get id current user
-    $poll = Poll::where('user_id', $id)->get(); // get all user's poll by user_id
-
-    return $poll;
-  }
   /**
    * Display a listing of the resource.
    *
@@ -24,7 +17,12 @@ class PollController extends Controller
   public function index()
   {
     // get all data
-    return Poll::all();
+    $poll =  Poll::all();
+
+    return response()->json([
+      "status" => "success",
+      "data" => $poll
+    ]);
   }
 
   /**
@@ -57,8 +55,10 @@ class PollController extends Controller
       ]);
     }
 
-    // return Poll::create($request->all()); // create data
-    return [$pollOption, $poll]; // create data
+    return response()->json([
+      "status" => "success",
+      "data" => $poll,
+    ]);
   }
 
   /**
@@ -69,7 +69,19 @@ class PollController extends Controller
    */
   public function show($id)
   {
-    return Poll::find($id); // find data by id
+    $poll = Poll::find($id); // find data by id
+
+    if (!$poll) {
+      return response()->json([
+        "status" => "error",
+        "message" => "poll not found"
+      ], 404);
+    }
+
+    return response()->json([
+      "status" => "success",
+      "data" => $poll
+    ]);
   }
 
   /**
@@ -82,6 +94,23 @@ class PollController extends Controller
   public function update(Request $request, $id)
   {
     $poll = Poll::find($id);
+    if (!$poll) {
+      return response()->json([
+        "status" => "error",
+        "message" => "poll not found"
+      ], 404);
+    }
+
+    $user = auth()->user();
+    $user_id = $poll->user_id;
+
+    if ($user_id != $user->id) { // check user can update poll or not (only user which create the poll can update)
+      return response()->json([
+        "status" => "error",
+        "message" => "user can't update poll"
+      ], 404);
+    }
+
     $poll->update($request->all()); // update  data
 
     $pollOption = PollOption::where('poll_id', '=', $id); // find pollOption by poll_id
@@ -93,8 +122,11 @@ class PollController extends Controller
         'image_path' => $request->input("image_path{$i}")
         // 'poll_id' => $poll->id
       ]);
-      return $poll;
     }
+    return response()->json([
+      "status" => "success",
+      "data" => $poll
+    ]);
   }
 
   /**
@@ -105,7 +137,21 @@ class PollController extends Controller
    */
   public function destroy($id)
   {
-    return Poll::destroy($id);
+    $poll = Poll::find($id);
+
+    if (!$poll) {
+      return response()->json([
+        "status" => "error",
+        "message" => "poll not found",
+      ], 404);
+    }
+
+    $poll->delete();
+
+    return response()->json([
+      "status" => "success",
+      "message" => "poll deleted"
+    ]);
   }
 
   /**
@@ -116,6 +162,35 @@ class PollController extends Controller
    */
   public function search($title)
   {
-    return Poll::where('title', 'like', '%' . $title . '%')->get(); // search data by title
+    $poll = Poll::where('title', 'like', '%' . $title . '%')->get(); // search data by title
+
+    if (!$poll) {
+      return response()->json([
+        "status" => "error",
+        "message" => "poll not found",
+      ], 404);
+    }
+
+    return response()->json([
+      "status" => "success",
+      "message" => $poll
+    ]);
+  }
+
+  public function userPoll()
+  {
+    $id = auth()->user()->id; // get id current user
+    $poll = Poll::where('user_id', $id)->get(); // get all user's poll by user_id
+    if (!$poll) {
+      return response()->json([
+        "status" => "error",
+        "message" => "poll not found",
+      ], 404);
+    }
+
+    return response()->json([
+      "status" => "success",
+      "message" => $poll
+    ]);
   }
 }
