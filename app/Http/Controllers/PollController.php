@@ -46,18 +46,14 @@ class PollController extends Controller
     $poll = Poll::create($data);
 
     // insert data to poll-options table
-    $countOptions = 2; // just create 2 option
-    for ($i = 1; $i <= $countOptions; $i += 1) {
-      $pollOption = PollOption::create([
-        'option' => $request->input("option{$i}"),
-        'image_path' => $request->input("image_path{$i}"),
-        'poll_id' => $poll->id
-      ]);
+    foreach ($data['poll_options'] as $option) {
+      $option['poll_id'] = $poll->id;
+      $pollOption = PollOption::create($option);
     }
 
     return response()->json([
       "status" => "success",
-      "data" => $poll,
+      "data" => $poll
     ]);
   }
 

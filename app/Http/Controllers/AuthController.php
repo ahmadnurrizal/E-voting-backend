@@ -15,13 +15,17 @@ class AuthController extends Controller
     $fields = $request->validate([
       'name' => 'required|string',
       'email' => 'required|string|unique:users,email',
-      'password' => 'required|string|confirmed'
+      'password' => 'required|string|confirmed',
+      'gender' => 'required|string',
+      'date_of_birth' => 'required|string'
     ]);
 
     $user = User::create([
       'name' => $fields['name'],
       'email' => $fields['email'],
-      'password' => bcrypt($fields['password'])
+      'password' => bcrypt($fields['password']),
+      'gender' => $fields['gender'],
+      'date_of_birth' => $fields['date_of_birth'],
     ]);
 
     // creating token
