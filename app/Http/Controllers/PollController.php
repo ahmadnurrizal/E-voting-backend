@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Poll;
 use App\Models\PollOption;
+use App\Models\Voter;
 use Illuminate\Http\Request;
 use Carbon\Carbon; // managing date and time in PHP much easier
 
@@ -190,5 +191,32 @@ class PollController extends Controller
       "status" => "success",
       "message" => $poll
     ]);
+  }
+
+  public function result($id)
+  {
+    $countOption = PollOption::where('poll_options.poll_id', '=', $id)->count(); // get value countOption
+    /*  
+        list value of poll_option_id : 
+        A=0,
+        B=1,
+        C=2, dst
+    */
+    for ($i = 0; $i < $countOption; $i++) {
+      $data[$i] = Voter::where('voters.poll_id', '=', $id)->where('voters.poll_option_id', '=', $i)
+        ->join('users', 'users.id', '=', 'voters.user_id')
+        ->join('polls', 'polls.id', '=', 'voters.poll_id')
+        ->join('poll_options', 'poll_options.id', '=', 'voters.poll_id')
+        ->count();
+      // ->get(['polls.id', 'polls.title', 'poll_options.option', 'users.name', 'voters.poll_option_id']); // return spesific column   
+    }
+
+    /*
+        $data[0] >> count of option A
+        $data[1] >> count of option B
+        $data[2] >> count of option C
+        dst
+    */
+    return $data;
   }
 }
