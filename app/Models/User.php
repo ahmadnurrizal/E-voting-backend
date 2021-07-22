@@ -24,6 +24,7 @@ class User extends Authenticatable
     'date_of_birth',
     'address',
     'gender',
+    'profil_path'
   ];
 
   /**
@@ -42,6 +43,6 @@ class User extends Authenticatable
    * @var array
    */
   protected $casts = [
-    'email_verified_at' => 'datetime',
+    'email_verified_at' => 'datetime'
   ];
 }

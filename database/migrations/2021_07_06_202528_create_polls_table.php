@@ -18,7 +18,7 @@ class CreatePollsTable extends Migration
       $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
       $table->string('title');
       $table->string('description');
-      $table->string('deadline');
+      $table->date('deadline');
       $table->string('status');
       $table->timestamps(); // automaticaly add colomn created_at & updated_at
     });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Poll;
 use App\Models\PollOption;
 use Illuminate\Http\Request;
+use Carbon\Carbon; // managing date and time in PHP much easier
 
 class PollController extends Controller
 {
@@ -36,13 +37,14 @@ class PollController extends Controller
     $request->validate([
       'title' => 'required',
       'description' => 'required',
-      'deadline' => 'required',
+      'deadline' => 'required|date_format:d/m/Y',
     ]);
 
     // insert data to polls table
     $user = auth()->user();
     $data = $request->all();
     $data['user_id'] = $user->id; //auto fill user_id base on user when creating polling
+    $data['deadline'] = Carbon::createFromFormat('d/m/Y', $data['deadline'])->format('Y-m-d');
     $poll = Poll::create($data);
 
     // insert data to poll-options table
