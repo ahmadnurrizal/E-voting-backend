@@ -26,7 +26,8 @@ class AuthController extends Controller
       'email' => $fields['email'],
       'password' => bcrypt($fields['password']),
       'gender' => $fields['gender'],
-      'date_of_birth' => \Carbon\Carbon::createFromFormat('d/m/Y', $fields['date_of_birth'])->format('Y-m-d') // date format convert to yyyy/mm/dd
+      // 'date_of_birth' => \Carbon\Carbon::createFromFormat('d/m/Y', $fields['date_of_birth'])->format('Y-m-d') // date format convert to yyyy/mm/dd
+      'date_of_birth' => $fields['date_of_birth']
     ]);
 
     // creating token
