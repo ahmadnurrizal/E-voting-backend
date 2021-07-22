@@ -17,7 +17,7 @@ class AuthController extends Controller
       'email' => 'required|string|unique:users,email',
       'password' => 'required|string|confirmed',
       'gender' => 'required|string',
-      'date_of_birth' => 'required|date_format:d/m/Y' // input format date dd/mm/yyyy
+      'date_of_birth' => 'required' // input format date dd/mm/yyyy
     ]);
 
 
