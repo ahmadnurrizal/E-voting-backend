@@ -33,7 +33,7 @@ class AuthController extends Controller
       'email' => 'required|string|unique:users,email',
       'password' => 'required|string|confirmed',
       'gender' => 'required|string',
-      'date_of_birth' => 'required|date_format:d/m/Y' // input format date dd/mm/yyyy
+      'date_of_birth' => 'required' // input format date dd/mm/yyyy
     ]);
 
 
@@ -42,8 +42,8 @@ class AuthController extends Controller
       'email' => $fields['email'],
       'password' => bcrypt($fields['password']),
       'gender' => $fields['gender'],
-      'date_of_birth' => \Carbon\Carbon::createFromFormat('d/m/Y', $fields['date_of_birth'])->format('Y-m-d') // date format convert to yyyy/mm/dd
-      // 'date_of_birth' => $fields['date_of_birth']
+      // 'date_of_birth' => \Carbon\Carbon::createFromFormat('d/m/Y', $fields['date_of_birth'])->format('Y-m-d') // date format convert to yyyy/mm/dd
+      'date_of_birth' => $fields['date_of_birth']
     ]);
 
     // creating token
