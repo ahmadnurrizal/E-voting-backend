@@ -30,6 +30,7 @@ Route::get('/v1/polls', [PollController::class, 'index']); // get all poll
 Route::get('/v1/polls/{id}', [PollController::class, 'show']); // get poll by id
 Route::get('/v1/polls/search/{title}', [PollController::class, 'search']); // get poll by title
 Route::get('/v1/polls/result/{id}', [PollController::class, 'result']); // get poll result by id
+Route::get('/v1/users', [AuthController::class, 'index']); // gell all user
 
 // Protected Routes (need a valid token to access)
 Route::group(['middleware' => ['auth:sanctum']], function () {
