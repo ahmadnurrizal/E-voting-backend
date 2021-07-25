@@ -35,7 +35,7 @@ Route::get('/v1/users', [AuthController::class, 'index']); // gell all user
 // Protected Routes (need a valid token to access)
 Route::group(['middleware' => ['auth:sanctum']], function () {
   Route::get('/v1/user-poll', [PollController::class, 'userPoll']); // get all poll created by id current user
-  Route::put('/v1/users', [AuthController::class, 'update']); // update user by id current user
+  Route::post('/v1/users', [AuthController::class, 'update']); // update user by id current user
   Route::post('/v1/polls', [PollController::class, 'store']); // create poll
   Route::put('/v1/polls/{id}', [PollController::class, 'update']); // update poll by id
   Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']); // delete poll by id

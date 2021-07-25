@@ -38,14 +38,15 @@ class PollController extends Controller
     $request->validate([
       'title' => 'required',
       'description' => 'required',
-      'deadline' => 'required|date_format:d/m/Y',
+      'deadline' => 'required',
     ]);
 
     // insert data to polls table
     $user = auth()->user();
     $data = $request->all();
     $data['user_id'] = $user->id; //auto fill user_id base on user when creating polling
-    $data['deadline'] = Carbon::createFromFormat('d/m/Y', $data['deadline'])->format('Y-m-d');
+    // $data['deadline'] = Carbon::createFromFormat('d/m/Y', $data['deadline'])->format('Y-m-d');
+    $data['deadline'] = $data['deadline'];
     $poll = Poll::create($data);
 
     // insert data to poll-options table

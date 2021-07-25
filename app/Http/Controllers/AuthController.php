@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class AuthController extends Controller
 {
@@ -33,7 +34,7 @@ class AuthController extends Controller
       'email' => 'required|string|unique:users,email',
       'password' => 'required|string|confirmed',
       'gender' => 'required|string',
-      'date_of_birth' => 'required' // input format date dd/mm/yyyy
+      'date_of_birth' => 'required'
     ]);
 
 
@@ -90,17 +91,39 @@ class AuthController extends Controller
 
   public function update(Request $request)
   {
-
     $request->validate([
       'email' => 'string|unique:users,email',
+      'image' => 'mimes:png,jpg,jpeg|max:1024,' // max size = 1024 kb, accepted formats : png,jpg,jpeg
     ]);
 
     $id = auth()->user()->id; // get id current user
     $user = User::find($id);
-    $user->update($request->all()); // update  data
-    $user['password'] = bcrypt($user->password);
 
-    $user->update(array('password' => $user['password']));
+    $exist = File::exists(public_path('images/profils/' . $user->profil_path)); // checking an old image. return true/false
+    if ($exist && $user->profil_path != '') {
+      unlink('images/profils/' . $user->profil_path); // remove old image
+    }
+
+
+    if ($request->hasFile('image')) {
+      // create new uniq name of image
+      $newImageName = time() . '-' . $id . '.' . $request->image->extension();
+
+      // saving image to /public/image/profils directory
+      $request->image->move(public_path('images/profils'), $newImageName);
+      $request->profil_path = $newImageName;
+    } else {
+      $newImageName = null;
+    }
+
+    // update all request
+    $user->update($request->all());
+
+    // manual update because we need to process first then input to database
+    $user->update([
+      'password' => bcrypt($user->password),
+      'profil_path' => $newImageName,
+    ]);
 
     return response()->json([
       "status" => "success",
