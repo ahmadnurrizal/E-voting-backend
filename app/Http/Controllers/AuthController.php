@@ -131,9 +131,11 @@ class AuthController extends Controller
     ]);
   }
 
-  public function show($id)
+  public function show()
   {
-    $user = User::where('id', '=', $id)->get(); // search data by id
+    // $user = User::where('id', '=', $id)->get(); // search data by id
+    $id = auth()->user()->id; // get id current user
+    $user = User::find($id);
 
     if (!$user) {
       return response()->json([
