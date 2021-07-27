@@ -39,7 +39,7 @@ class VoterController extends Controller
     $voter = Voter::create([
       'user_id' => $user->id,
       'poll_id' => $id,
-      'poll_option_id' => $request->input('poll_option_id')
+      'poll_option_id' => $request->poll_option_id
     ]);
 
     return response()->json([

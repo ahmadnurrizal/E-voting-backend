@@ -50,14 +50,29 @@ class PollController extends Controller
     $poll = Poll::create($data);
 
     // insert data to poll-options table
+    $i = 1; // prepare uniq name for image
     foreach ($data['poll_options'] as $option) {
+      // create new uniq name of image
+      $newImageName = time() . '-' . 'poll' . $poll->id . '-' . 'option' . $i;
+      $i++;
+
+      // decode base64 to image and save to 'images/options/'
+      $image = $option['image'];
+      file_put_contents(
+        public_path('images/options/') . $newImageName . ".jpg",
+        base64_decode($image)
+      );
+
       $option['poll_id'] = $poll->id;
-      $pollOption = PollOption::create($option);
+      $option['image_path'] = $newImageName;
+
+      $pollOption[] = PollOption::create($option);
+      sleep(1); //sleep 1 second for waiting decode and upload process
     }
 
     return response()->json([
       "status" => "success",
-      "data" => $poll
+      "data" => $poll, $pollOption
     ]);
   }
 
