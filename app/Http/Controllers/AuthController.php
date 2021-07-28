@@ -131,7 +131,7 @@ class AuthController extends Controller
     ]);
   }
 
-  public function show()
+  public function userShow()
   {
     // $user = User::where('id', '=', $id)->get(); // search data by id
     $id = auth()->user()->id; // get id current user
@@ -140,7 +140,24 @@ class AuthController extends Controller
     if (!$user) {
       return response()->json([
         "status" => "error",
-        "message" => "poll not found"
+        "message" => "user not found"
+      ], 404);
+    }
+
+    return response()->json([
+      "status" => "success",
+      "data" => $user
+    ]);
+  }
+
+  public function show($id)
+  {
+    $user = User::where('id', '=', $id)->get(); // search data by id
+
+    if (!$user) {
+      return response()->json([
+        "status" => "error",
+        "message" => "user not found"
       ], 404);
     }
 
