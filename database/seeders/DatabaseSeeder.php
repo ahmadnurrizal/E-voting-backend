@@ -13,6 +13,12 @@ class DatabaseSeeder extends Seeder
    */
   public function run()
   {
-    $this->call(UserTableSeeder::class); // call UserTableSeeder and execute UserFactory.php
+    // remember that seeder must be call in order 
+    $this->call([
+      UserTableSeeder::class, // call UserTableSeeder and execute UserFactory.php
+      PollTableSeeder::class, // call PollTableSeeder and execute PollFactory.php
+      PollOptionTableSeeder::class, // call PollOptionTableSeeder and execute PollOptionFactory.php
+      VoterTableSeeder::class, // call VoterTableSeeder and execute PollOptionFactory.php
+    ]);
   }
 }

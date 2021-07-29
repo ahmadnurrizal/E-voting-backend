@@ -45,4 +45,14 @@ class User extends Authenticatable
   protected $casts = [
     'email_verified_at' => 'datetime'
   ];
+
+  public function polls()
+  {
+    return $this->hasMany(Poll::class); // User can create many polls
+  }
+
+  public function voters()
+  {
+    return $this->hasMany(Voter::class); // user can vote on many polls
+  }
 }

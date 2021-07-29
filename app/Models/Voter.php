@@ -14,4 +14,19 @@ class Voter extends Model
     'poll_id',
     'poll_option_id'
   ];
+
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
+
+  public function poll()
+  {
+    return $this->belongsTo(Poll::class);
+  }
+
+  public function pollOption()
+  {
+    return $this->belongsTo(PollOption::class);
+  }
 }

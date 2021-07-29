@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Voter;
 use Illuminate\Database\Seeder;
-use App\Models\User;
 
-class UserTableSeeder extends Seeder
+class VoterTableSeeder extends Seeder
 {
   /**
    * Run the database seeds.
@@ -14,6 +14,6 @@ class UserTableSeeder extends Seeder
    */
   public function run()
   {
-    User::factory()->count(100)->create(); // generate user table 100 records
+    Voter::factory()->count(100)->create(); // generate voter table 100 records
   }
 }

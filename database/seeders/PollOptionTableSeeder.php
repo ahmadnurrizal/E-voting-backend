@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
 
-class UserTableSeeder extends Seeder
+class PollOptionTableSeeder extends Seeder
 {
   /**
    * Run the database seeds.
@@ -14,6 +13,6 @@ class UserTableSeeder extends Seeder
    */
   public function run()
   {
-    User::factory()->count(100)->create(); // generate user table 100 records
+    // \App\Models\PollOption::factory()->count(60)->create(); // generate pollOption table 60 records
   }
 }
