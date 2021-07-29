@@ -14,4 +14,14 @@ class PollOption extends Model
     'option',
     'image_path'
   ];
+
+  public function voters()
+  {
+    return $this->hasMany(Voter::class); // pollOption has many voters
+  }
+
+  public function poll()
+  {
+    return $this->belongsTo(Poll::class);
+  }
 }
