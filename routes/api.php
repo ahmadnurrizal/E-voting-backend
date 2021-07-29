@@ -25,15 +25,16 @@ use Illuminate\Support\Facades\Route;
 // Public Routes 
 Route::post('/v1/register', [AuthController::class, 'register']); // register
 Route::post('/v1/login', [AuthController::class, 'login']); // login
-Route::get('/v1/users/{id}', [AuthController::class, 'show']); // get user by id
 Route::get('/v1/polls', [PollController::class, 'index']); // get all poll
 Route::get('/v1/polls/{id}', [PollController::class, 'show']); // get poll by id
 Route::get('/v1/polls/search/{title}', [PollController::class, 'search']); // get poll by title
 Route::get('/v1/polls/result/{id}', [PollController::class, 'result']); // get poll result by id
 Route::get('/v1/users', [AuthController::class, 'index']); // gell all user
+Route::get('/v1/users/{id}', [AuthController::class, 'show']); // get user by id
 
 // Protected Routes (need a valid token to access)
 Route::group(['middleware' => ['auth:sanctum']], function () {
+  Route::get('/v1/user', [AuthController::class, 'userShow']); // get user by current id user
   Route::get('/v1/user-poll', [PollController::class, 'userPoll']); // get all poll created by id current user
   Route::post('/v1/users', [AuthController::class, 'update']); // update user by id current user
   Route::post('/v1/polls', [PollController::class, 'store']); // create poll

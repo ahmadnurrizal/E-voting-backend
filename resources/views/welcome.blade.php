@@ -128,5 +128,33 @@
                 </div>
             </div>
         </div>
+
+        <div id="user">
+          
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>
+          $(document).ready(function(){
+            $.ajax({
+                     type:"GET",
+                     dataType: "json",
+                     url:"https://finger-vote-2021.herokuapp.com/api/v1/users/5",
+                     success:function(data)
+                     {
+                       $('#user').html(data.data[0].email)
+                         console.log(data);
+                     }
+                  });
+          });
+      </script>
+
+
+
+
+
     </body>
+
+
+
 </html>
