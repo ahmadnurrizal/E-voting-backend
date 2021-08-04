@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Voter;
+use App\Models\Poll;
 use Illuminate\Http\Request;
 
 class VoterController extends Controller
@@ -36,6 +37,15 @@ class VoterController extends Controller
   public function store(Request $request, $id)
   {
     $user = auth()->user();
+
+    $poll = Poll::find($id);
+    if (!$poll) {
+      return response()->json([
+        "status" => "error",
+        "message" => "poll not found",
+      ], 404);
+    }
+
     $voter = Voter::create([
       'user_id' => $user->id,
       'poll_id' => $id,
