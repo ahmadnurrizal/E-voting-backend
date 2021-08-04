@@ -22,6 +22,11 @@ class Poll extends Model
     return $this->hasMany(PollOption::class); // poll has many pollOptions
   }
 
+  public function voters()
+  {
+    return $this->hasMany(Voter::class); // poll has many Voters
+  }
+
   public function user()
   {
     return $this->belongsTo(User::class); // Get the user that owns the post.

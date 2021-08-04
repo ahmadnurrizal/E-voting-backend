@@ -26,7 +26,7 @@ class VoterFactory extends Factory
     $faker = \Faker\Factory::create('id_ID'); // more information : https://github.com/fzaninotto/Faker
     return [
       'user_id' => $faker->numberBetween(1, User::count()),
-      'poll_id' => $faker->unique()->randomNumber(2, true),
+      'poll_id' => $faker->unique()->randomNumber(2, true), // count of poll cant more than 99 records
       'poll_option_id' => rand(1, 3) // Poll::count() ==> return poll count of Poll Table
     ];
   }

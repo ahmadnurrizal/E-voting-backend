@@ -213,11 +213,11 @@ class PollController extends Controller
     $countOption = PollOption::where('poll_options.poll_id', '=', $id)->count(); // get value countOption
     /*  
         list value of poll_option_id : 
-        A=0,
-        B=1,
-        C=2, dst
+        A=1,
+        B=2,
+        C=3, dst
     */
-    for ($i = 0; $i < $countOption; $i++) {
+    for ($i = 1; $i <= $countOption; $i++) {
       $data[$i] = Voter::where('voters.poll_id', '=', $id)->where('voters.poll_option_id', '=', $i)
         ->join('users', 'users.id', '=', 'voters.user_id')
         ->join('polls', 'polls.id', '=', 'voters.poll_id')
@@ -227,9 +227,9 @@ class PollController extends Controller
     }
 
     /*
-        $data[0] >> count of option A
-        $data[1] >> count of option B
-        $data[2] >> count of option C
+        $data["1"] >> count of option A
+        $data["2"] >> count of option B
+        $data["3"] >> count of option C
         dst
     */
     return $data;

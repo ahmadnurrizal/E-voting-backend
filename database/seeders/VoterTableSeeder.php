@@ -14,6 +14,6 @@ class VoterTableSeeder extends Seeder
    */
   public function run()
   {
-    Voter::factory()->count(100)->create(); // generate voter table 100 records
+    Voter::factory()->count(500)->create(); // generate voter table 100 records
   }
 }
