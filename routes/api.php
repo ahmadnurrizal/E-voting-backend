@@ -42,11 +42,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
   Route::post('/v1/logout', [AuthController::class, 'logout']); // logout
   Route::get('/v1/user', [AuthController::class, 'userShow']); // get user by id user's login
   Route::get('/v1/user-poll', [PollController::class, 'userPoll']); // get all poll created by id user's login
-
   Route::post('/v1/users', [AuthController::class, 'update']); // update user by id user's login
   Route::put('/v1/users/change-password', [AuthController::class, 'changePassword']); // change password by id user's login
+  Route::post('/v1/polls/upload-option-image', [PollController::class, 'uploadOptionImage']); // change password by id user's login
   Route::delete('/v1/users', [AuthController::class, 'destroy']); // delete user by id user's login
-
   Route::post('/v1/polls', [PollController::class, 'store']); // create poll
   Route::put('/v1/polls/{id}', [PollController::class, 'update']); // update poll by id
   Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']); // delete poll by id

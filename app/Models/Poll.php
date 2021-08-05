@@ -14,7 +14,8 @@ class Poll extends Model
     'title',
     'description',
     'deadline',
-    'status'
+    'status',
+    'image_path'
   ];
 
   public function pollOptions()

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Poll;
 use App\Models\PollOption;
 use App\Models\Voter;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon; // managing date and time in PHP much easier
 
@@ -35,43 +36,67 @@ class PollController extends Controller
    */
   public function store(Request $request)
   {
-    $request->validate([
-      'title' => 'required',
-      'description' => 'required',
-      'deadline' => 'required',
-    ]);
-
     // insert data to polls table
     $user = auth()->user();
     $data = $request->all();
     $data['user_id'] = $user->id; //auto fill user_id base on user when creating polling
-    // $data['deadline'] = Carbon::createFromFormat('d/m/Y', $data['deadline'])->format('Y-m-d');
     $poll = Poll::create($data);
 
-    // insert data to poll-options table
-    $i = 1; // prepare uniq name for image
-    foreach ($data['poll_options'] as $option) {
+    $request->validate([
+      'title' => 'required',
+      'description' => 'required',
+      'deadline' => 'required',
+      'image' => 'mimes:png,jpg,jpeg|max:1024,' // max size = 1024 kb, accepted formats : png,jpg,jpeg
+    ]);
+
+    if ($request->hasFile('image')) {
       // create new uniq name of image
-      $newImageName = time() . '-' . 'poll' . $poll->id . '-' . 'option' . $i;
-      $i++;
+      $newImageName = time() . '-' . $poll->id . '.' . $request->image->extension();
 
-      // decode base64 to image and save to 'images/options/'
-      $image = $option['image'];
-      file_put_contents(
-        public_path('images/options/') . $newImageName . ".jpg",
-        base64_decode($image)
-      );
-
-      $option['poll_id'] = $poll->id;
-      $option['image_path'] = $newImageName;
-
-      $pollOption[] = PollOption::create($option);
-      sleep(1); //sleep 1 second for waiting decode and upload process
+      // saving image to /public/image/profils directory
+      $request->image->move(public_path('images/polls'), $newImageName);
+      $request->image_path = $newImageName;
     }
+
+    // manual update because we need to process first then input to database
+    $poll->update([
+      'image_path' => $newImageName,
+    ]);
 
     return response()->json([
       "status" => "success",
-      "data" => $poll, $pollOption
+      "data" => $poll
+    ]);
+  }
+
+  public function uploadOptionImage(Request $request)
+  {
+    $request['poll_id'] = 1; // ???????????????
+
+    $pollOption = PollOption::create($request->all());
+
+    $request->validate([
+      'image' => 'mimes:png,jpg,jpeg|max:1024,' // max size = 1024 kb, accepted formats : png,jpg,jpeg
+    ]);
+
+    if ($request->hasFile('image')) {
+      // create new uniq name of image
+      $newImageName = time() . '-' . $pollOption->id . '.' . $request->image->extension();
+
+      // saving image to /public/image/profils directory
+      $request->image->move(public_path('images/options'), $newImageName);
+      $request->image_path = $newImageName;
+    } else {
+      return 'no image';
+    }
+
+    $pollOption->update([
+      'image_path' => $newImageName,
+    ]);
+
+    return response()->json([
+      "status" => "success",
+      "data" => $pollOption
     ]);
   }
 

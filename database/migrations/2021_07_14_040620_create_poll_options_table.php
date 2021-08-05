@@ -17,7 +17,7 @@ class CreatePollOptionsTable extends Migration
       $table->id();
       $table->foreignId('poll_id')->constrained('polls')->onUpdate('cascade')->onDelete('cascade');
       $table->string('option');
-      $table->string('image_path');
+      $table->string('image_path')->nullable();
       $table->timestamps();
     });
   }
