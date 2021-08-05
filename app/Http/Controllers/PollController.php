@@ -174,9 +174,46 @@ class PollController extends Controller
    * @param  string  $title
    * @return \Illuminate\Http\Response
    */
-  public function search($title)
+  public function discover($title)
   {
     $poll = Poll::where('title', 'like', '%' . $title . '%')->get(); // search data by title
+
+    if (!$poll) {
+      return response()->json([
+        "status" => "error",
+        "message" => "poll not found",
+      ], 404);
+    }
+
+    return response()->json([
+      "status" => "success",
+      "message" => $poll
+    ]);
+  }
+
+  public function trending()
+  {
+    // according to count voters on current month
+    $poll = Poll::withCount(['voters' => function ($query) {
+      $query->whereMonth('created_at', Carbon::now()->month);
+    }])->orderBy('voters_count', 'DESC')->take(6)->get();
+
+    if (!$poll) {
+      return response()->json([
+        "status" => "error",
+        "message" => "poll not found",
+      ], 404);
+    }
+
+    return response()->json([
+      "status" => "success",
+      "message" => $poll
+    ]);
+  }
+
+  public function newst()
+  {
+    $poll = Poll::orderBy('created_at', 'DESC')->take(6)->get();
 
     if (!$poll) {
       return response()->json([

@@ -24,7 +24,9 @@ class User extends Authenticatable
     'date_of_birth',
     'address',
     'gender',
-    'profil_path'
+    'profil_path',
+    'status',
+    'username'
   ];
 
   /**
