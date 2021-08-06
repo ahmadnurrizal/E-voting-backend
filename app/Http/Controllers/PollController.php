@@ -75,6 +75,7 @@ class PollController extends Controller
     ]);
   }
 
+
   /**
    * Display the specified resource.
    *
@@ -237,6 +238,21 @@ class PollController extends Controller
         "status" => "error",
         "message" => "poll not found",
       ], 404);
+    }
+
+    return response()->json([
+      "status" => "success",
+      "message" => $poll
+    ]);
+  }
+
+  public function otherUserPoll($id)
+  {
+    $poll = Poll::where('user_id', '=', $id)->get();
+    if ($poll->isEmpty()) {
+      return response()->json([
+        "message" => "poll not found"
+      ]);
     }
 
     return response()->json([
