@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Poll;
 use App\Models\PollOption;
 use App\Models\Voter;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon; // managing date and time in PHP much easier
 
@@ -33,6 +34,7 @@ class PollController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
+  // create poll
   public function store(Request $request)
   {
     $request->validate([
@@ -44,34 +46,39 @@ class PollController extends Controller
     // insert data to polls table
     $user = auth()->user();
     $data = $request->all();
-    $data['user_id'] = $user->id; //auto fill user_id base on user when creating polling
-    // $data['deadline'] = Carbon::createFromFormat('d/m/Y', $data['deadline'])->format('Y-m-d');
+    $data['user_id'] = $user->id; //auto fill user_id according on user who create
     $poll = Poll::create($data);
 
-    // insert data to poll-options table
-    $i = 1; // prepare uniq name for image
     foreach ($data['poll_options'] as $option) {
-      // create new uniq name of image
-      $newImageName = time() . '-' . 'poll' . $poll->id . '-' . 'option' . $i;
-      $i++;
-
-      // decode base64 to image and save to 'images/options/'
-      $image = $option['image'];
-      file_put_contents(
-        public_path('images/options/') . $newImageName . ".jpg",
-        base64_decode($image)
-      );
-
       $option['poll_id'] = $poll->id;
-      $option['image_path'] = $newImageName;
-
       $pollOption[] = PollOption::create($option);
-      sleep(1); //sleep 1 second for waiting decode and upload process
     }
 
     return response()->json([
       "status" => "success",
       "data" => $poll, $pollOption
+    ]);
+  }
+
+  public function uploadImage(Request $request)
+  {
+    $request->validate([
+      'image' => 'mimes:png,jpg,jpeg|max:1024,' // max size = 1024 kb, accepted formats : png,jpg,jpeg
+    ]);
+
+    if ($request->hasFile('image')) {
+      // create new uniq name of image
+      $newImageName = time() . '.' . $request->image->extension();
+
+      // saving image to /public/image/polls directory
+      $request->image->move(public_path('images/polls'), $newImageName);
+    } else {
+      return 'no image';
+    }
+
+    return response()->json([
+      "status" => "success",
+      "data" => $newImageName
     ]);
   }
 
@@ -179,7 +186,7 @@ class PollController extends Controller
   {
     $poll = Poll::where('title', 'like', '%' . $title . '%')->get(); // search data by title
 
-    if (!$poll) {
+    if ($poll->isEmpty()) {
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
@@ -199,7 +206,7 @@ class PollController extends Controller
       $query->whereMonth('created_at', Carbon::now()->month);
     }])->orderBy('voters_count', 'DESC')->take(6)->get();
 
-    if (!$poll) {
+    if ($poll->isEmpty()) {
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
@@ -212,11 +219,11 @@ class PollController extends Controller
     ]);
   }
 
-  public function newst()
+  public function newest()
   {
     $poll = Poll::orderBy('created_at', 'DESC')->take(6)->get();
 
-    if (!$poll) {
+    if ($poll->isEmpty()) {
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
@@ -233,7 +240,7 @@ class PollController extends Controller
   {
     $id = auth()->user()->id; // get id current user
     $poll = Poll::where('user_id', $id)->get(); // get all user's poll by user_id
-    if (!$poll) {
+    if ($poll->isEmpty()) {
       return response()->json([
         "status" => "error",
         "message" => "poll not found",

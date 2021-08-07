@@ -137,7 +137,6 @@ class AuthController extends Controller
 
   public function userShow()
   {
-    // $user = User::where('id', '=', $id)->get(); // search data by id
     $id = auth()->user()->id; // get id current user
     $user = User::find($id);
 
@@ -194,7 +193,7 @@ class AuthController extends Controller
 
   public function show($id)
   {
-    $user = User::where('id', '=', $id)->get(); // search data by id
+    $user = User::find($id); // search data by id
 
     if (!$user) {
       return response()->json([

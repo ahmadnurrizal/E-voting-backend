@@ -28,12 +28,14 @@ Route::post('/v1/login', [AuthController::class, 'login']); // login
 Route::get('/v1/polls', [PollController::class, 'index']); // get all poll
 Route::get('/v1/users', [AuthController::class, 'index']); // gell all user
 Route::get('/v1/polls/trending', [PollController::class, 'trending']); // get trending polls
-Route::get('/v1/polls/newst', [PollController::class, 'newst']); // get newst polls
+Route::get('/v1/polls/newest', [PollController::class, 'newest']); // get newst polls
 Route::get('/v1/polls/{id}', [PollController::class, 'show']); // get poll by id
 Route::get('/v1/polls/discover/{title}', [PollController::class, 'discover']); // get poll by title
 Route::get('/v1/polls/result/{id}', [PollController::class, 'result']); // get poll result by id
 Route::get('/v1/users/{id}', [AuthController::class, 'show']); // get user by id
+Route::get('/v1/poll-options/{id}', [PollOptionController::class, 'show']); // get user by id
 Route::get('/v1/polls/user-poll/{id}', [PollController::class, 'otherUserPoll']); // get poll by id user
+
 // routes which contain {} (wildcard) have to put in back order
 
 
@@ -43,11 +45,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
   Route::post('/v1/logout', [AuthController::class, 'logout']); // logout
   Route::get('/v1/user', [AuthController::class, 'userShow']); // get user by id user's login
   Route::get('/v1/user-poll', [PollController::class, 'userPoll']); // get all poll created by id user's login
-
   Route::post('/v1/users', [AuthController::class, 'update']); // update user by id user's login
   Route::put('/v1/users/change-password', [AuthController::class, 'changePassword']); // change password by id user's login
+  Route::post('/v1/poll-options/upload-image', [PollOptionController::class, 'uploadImage']); // change password by id user's login
+  Route::post('/v1/polls/upload-image', [PollController::class, 'uploadImage']); // change password by id user's login
   Route::delete('/v1/users', [AuthController::class, 'destroy']); // delete user by id user's login
-
   Route::post('/v1/polls', [PollController::class, 'store']); // create poll
   Route::put('/v1/polls/{id}', [PollController::class, 'update']); // update poll by id
   Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']); // delete poll by id
