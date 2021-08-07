@@ -33,6 +33,7 @@ Route::get('/v1/polls/{id}', [PollController::class, 'show']); // get poll by id
 Route::get('/v1/polls/discover/{title}', [PollController::class, 'discover']); // get poll by title
 Route::get('/v1/polls/result/{id}', [PollController::class, 'result']); // get poll result by id
 Route::get('/v1/users/{id}', [AuthController::class, 'show']); // get user by id
+Route::get('/v1/poll-options/{id}', [PollOptionController::class, 'show']); // get user by id
 // routes which contain {} (wildcard) have to put in back order
 
 
@@ -44,7 +45,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
   Route::get('/v1/user-poll', [PollController::class, 'userPoll']); // get all poll created by id user's login
   Route::post('/v1/users', [AuthController::class, 'update']); // update user by id user's login
   Route::put('/v1/users/change-password', [AuthController::class, 'changePassword']); // change password by id user's login
-  Route::post('/v1/polls/upload-option-image', [PollController::class, 'uploadOptionImage']); // change password by id user's login
+  Route::post('/v1/poll-options/upload-image', [PollOptionController::class, 'uploadImage']); // change password by id user's login
+  Route::post('/v1/polls/upload-image', [PollController::class, 'uploadImage']); // change password by id user's login
   Route::delete('/v1/users', [AuthController::class, 'destroy']); // delete user by id user's login
   Route::post('/v1/polls', [PollController::class, 'store']); // create poll
   Route::put('/v1/polls/{id}', [PollController::class, 'update']); // update poll by id

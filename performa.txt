@@ -1,24 +1,25 @@
 // Public Routes 
-Route::post('/v1/register', [AuthController::class, 'register']); // register 				*** page sign-up
-Route::post('/v1/login', [AuthController::class, 'login']); // login 					*** page login
-Route::get('/v1/polls', [PollController::class, 'index']); // get all poll				*** page dashboard
-Route::get('/v1/polls/{id}', [PollController::class, 'show']); // get poll by id			*** page Detail voting
-Route::get('/v1/polls/search/{title}', [PollController::class, 'search']); // get poll by title		*** page discover
-Route::get('/v1/polls/trending', [PollController::class, 'trending']); // get trending polls		*** page discover
-Route::get('/v1/polls/newst', [PollController::class, 'newst']); // get newst polls			*** page discover
-Route::get('/v1/polls/result/{id}', [PollController::class, 'result']); // get poll result by id
-Route::get('/v1/users', [AuthController::class, 'index']); // gell all user				
-Route::get('/v1/users/{id}', [AuthController::class, 'show']); // get user by id
+Route::post('/v1/register', [AuthController::class, 'register']); // register 					*** page sign-up
+Route::post('/v1/login', [AuthController::class, 'login']); // login 						*** page login
+Route::get('/v1/polls', [PollController::class, 'index']); // get all poll					*** page dashboard
+Route::get('/v1/polls/{id}', [PollController::class, 'show']); // get poll by id				*** page Detail voting
+Route::get('/v1/polls/search/{title}', [PollController::class, 'search']); // get poll by title			*** page discover
+Route::get('/v1/polls/trending', [PollController::class, 'trending']); // get trending polls			*** page discover
+Route::get('/v1/polls/newst', [PollController::class, 'newst']); // get newst polls				*** page discover
+Route::get('/v1/polls/result/{id}', [PollController::class, 'result']); // get poll result by id		*** page result
+Route::get('/v1/users', [AuthController::class, 'index']); // gell all user					/// blom ada UI
+Route::get('/v1/users/{id}', [AuthController::class, 'show']); // get user by id				*** page other user profile
+Route::get('/v1/polls/user-poll/{id}', [PollController::class, 'otherUserPoll']); // get poll by id user	*** page other user profile
 
 // Protected Routes (need a valid token to access)
 Route::group(['middleware' => ['auth:sanctum']], function () {
-  Route::get('/v1/user', [AuthController::class, 'userShow']); // get user by current id user
-  Route::get('/v1/user-poll', [PollController::class, 'userPoll']); // get all poll created by id current user
+  Route::get('/v1/user', [AuthController::class, 'userShow']); // get user by current id user					*** page profile
+  Route::get('/v1/user-poll', [PollController::class, 'userPoll']); // get all poll created by id current user			/// blom ada UI
   Route::post('/v1/users', [AuthController::class, 'update']); // update user by id user's login				*** page profil
   Route::put('/v1/users/change-password', [AuthController::class, 'changePassword']); // change password by id user's login 	*** page profil
   Route::delete('/v1/users', [AuthController::class, 'destroy']); // delete user by id user's login				*** page profil
-  Route::post('/v1/polls', [PollController::class, 'store']); // create poll							*** page create voting
-  Route::put('/v1/polls/{id}', [PollController::class, 'update']); // update poll by id
-  Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']); // delete poll by id
-  Route::post('/v1/logout', [AuthController::class, 'logout']); // logout
-  Route::post('/v1/polls/{id}/vote', [VoterController::class, 'store']); // vote option
+  Route::post('/v1/polls', [PollController::class, 'store']); // create poll							*** page create voting (not completed)
+  Route::put('/v1/polls/{id}', [PollController::class, 'update']); // update poll by id						/// blom ada UI
+  Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']); // delete poll by id					/// blom ada UI
+  Route::post('/v1/logout', [AuthController::class, 'logout']); // logout							*** logout
+  Route::post('/v1/polls/{id}/vote', [VoterController::class, 'store']); // vote option						** page detail voting
