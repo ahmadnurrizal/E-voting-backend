@@ -218,7 +218,7 @@ class PollController extends Controller
     ]);
   }
 
-  public function newst()
+  public function newest()
   {
     $poll = Poll::orderBy('created_at', 'DESC')->take(6)->get();
 
