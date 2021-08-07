@@ -34,6 +34,8 @@ Route::get('/v1/polls/discover/{title}', [PollController::class, 'discover']); /
 Route::get('/v1/polls/result/{id}', [PollController::class, 'result']); // get poll result by id
 Route::get('/v1/users/{id}', [AuthController::class, 'show']); // get user by id
 Route::get('/v1/poll-options/{id}', [PollOptionController::class, 'show']); // get user by id
+Route::get('/v1/polls/user-poll/{id}', [PollController::class, 'otherUserPoll']); // get poll by id user
+
 // routes which contain {} (wildcard) have to put in back order
 
 

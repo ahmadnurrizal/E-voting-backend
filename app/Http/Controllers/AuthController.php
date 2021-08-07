@@ -208,7 +208,7 @@ class AuthController extends Controller
     ]);
   }
 
-  public function destroy()
+  public function destroy(Request $request)
   {
     $id = auth()->user()->id; // get id user's login
     $user = User::find($id);
@@ -218,6 +218,17 @@ class AuthController extends Controller
         "status" => "error",
         "message" => "user not found",
       ], 404);
+    }
+
+    $request->validate([
+      'password' => 'required|string'
+    ]);
+
+    if (!Hash::check($request->password, $user->password)) {
+      return response()->json([
+        "status" => "error",
+        "message" => "Password doesn't match",
+      ]);
     }
 
     $user->delete();
