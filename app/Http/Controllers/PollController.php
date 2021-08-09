@@ -97,7 +97,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found"
-      ], 404);
+      ]);
     }
 
     return response()->json([
@@ -120,7 +120,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found"
-      ], 404);
+      ]);
     }
 
     $user = auth()->user();
@@ -130,7 +130,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "user can't update poll"
-      ], 404);
+      ]);
     }
 
     $poll->update($request->all()); // update  data
@@ -165,7 +165,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
-      ], 404);
+      ]);
     }
 
     $poll->delete();
@@ -190,7 +190,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
-      ], 404);
+      ]);
     }
 
     return response()->json([
@@ -210,7 +210,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
-      ], 404);
+      ]);
     }
 
     return response()->json([
@@ -227,7 +227,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
-      ], 404);
+      ]);
     }
 
     return response()->json([
@@ -244,7 +244,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
-      ], 404);
+      ]);
     }
 
     return response()->json([
