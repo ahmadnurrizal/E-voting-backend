@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -103,31 +104,43 @@ class AuthController extends Controller
       'image' => 'mimes:png,jpg,jpeg|max:1024,' // max size = 1024 kb, accepted formats : png,jpg,jpeg
     ]);
 
-
-
-
     if ($request->hasFile('image')) {
-      $exist = File::exists(public_path('images/profils/' . $user->profil_path)); // checking an old image. return true/false
-      if ($exist && $user->profil_path != '') {
-        unlink('images/profils/' . $user->profil_path); // remove old image
-      }
-      // create new uniq name of image
-      $newImageName = time() . '-' . $id . '.' . $request->image->extension();
+      // checking user profile image exist or not
+      $filename = $user->profil_path;
+      $dir = '/';
+      $recursive = true; // Get subdirectories also?
+      $contents = collect(Storage::disk('google')->listContents($dir, $recursive));
+      $file = $contents
+        ->where('type', '=', 'file')
+        ->where('filename', '=', pathinfo($filename, PATHINFO_FILENAME))
+        ->where('extension', '=', pathinfo($filename, PATHINFO_EXTENSION))
+        ->first();
 
-      // saving image to /public/image/profils directory
-      $request->image->move(public_path('images/profils'), $newImageName);
-      $request->profil_path = $newImageName;
-    } else {
-      $newImageName = $user->profil_path;
+      $exist = !$file;
+      if (!$exist && $user->profil_path != '') {
+        Storage::disk("google")->delete($file['path']); // if exist delete old profile image
+      }
+
+      // create new uniq name of image
+      $newImageName = time() . '.' . $request->image->extension();
+
+      // upload new profile image to Google drive/LARAVEL/images/profiles
+      $dir = '/';
+      $recursive = true; // Get subdirectories also?
+      $contents = collect(Storage::disk('google')->listContents($dir, $recursive));
+      $dir = $contents->where('type', '=', 'dir')
+        ->where('filename', '=', 'profiles') // target folder = profiles
+        ->first(); // There could be duplicate directory names!
+
+      if (!$dir) {
+        return 'Directory does not exist!';
+      }
+      Storage::disk("google")->putFileAs($dir['path'], $request->file('image'), $newImageName); // upload image
+      $user->profil_path = $newImageName;
     }
 
     // update all request
     $user->update($request->all());
-
-    // manual update because we need to process first then input to database
-    $user->update([
-      'profil_path' => $newImageName,
-    ]);
 
     return response()->json([
       "status" => "success",
@@ -147,9 +160,29 @@ class AuthController extends Controller
       ], 404);
     }
 
+    $filename = $user->profil_path;
+
+    $dir = '/';
+    $recursive = true; // Get subdirectories also?
+    $contents = collect(Storage::disk('google')->listContents($dir, $recursive));
+
+    $file = $contents
+      ->where('type', '=', 'file')
+      ->where('filename', '=', pathinfo($filename, PATHINFO_FILENAME))
+      ->where('extension', '=', pathinfo($filename, PATHINFO_EXTENSION))
+      ->first(); // there can be duplicate file names!
+    //return $file; // array with file info
+
+    if (!$file) {
+      $imageURL = ''; // user doesn't have profile image
+    } else {
+      $imageURL = Storage::disk('google')->url($file['path']); // create URL for user's profile image
+    }
+
     return response()->json([
       "status" => "success",
-      "data" => $user
+      "data" => $user,
+      "profileURL" => $imageURL
     ]);
   }
 
