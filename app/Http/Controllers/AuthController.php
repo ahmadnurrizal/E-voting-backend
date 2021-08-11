@@ -264,6 +264,7 @@ class AuthController extends Controller
       ]);
     }
 
+
     $user->delete();
 
     return response()->json([
