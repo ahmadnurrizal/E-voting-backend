@@ -68,6 +68,7 @@ class PollController extends Controller
       'image' => 'mimes:png,jpg,jpeg|max:1024,' // max size = 1024 kb, accepted formats : png,jpg,jpeg
     ]);
 
+    dd("huuu");
     if ($request->hasFile('image')) {
       // create new uniq name of image
       $newImageName = time() . '.' . $request->image->extension();
