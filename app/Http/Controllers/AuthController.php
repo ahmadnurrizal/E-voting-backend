@@ -106,6 +106,7 @@ class AuthController extends Controller
 
 
 
+
     if ($request->hasFile('image')) {
       $exist = File::exists(public_path('images/profils/' . $user->profil_path)); // checking an old image. return true/false
       if ($exist && $user->profil_path != '') {
