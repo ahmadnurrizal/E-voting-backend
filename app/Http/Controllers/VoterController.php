@@ -43,7 +43,7 @@ class VoterController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
-      ], 404);
+      ]);
     }
 
     $voter = Voter::create([
