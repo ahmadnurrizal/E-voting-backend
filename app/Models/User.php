@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\ResetPasswordNotification;
 
-class User extends Authenticatable
+
+class User extends Authenticatable implements MustVerifyEmail
 {
   use HasFactory, Notifiable, HasApiTokens;
 
@@ -56,5 +58,13 @@ class User extends Authenticatable
   public function voters()
   {
     return $this->hasMany(Voter::class); // user can vote on many polls
+  }
+
+  public function sendPasswordResetNotification($token)
+  {
+
+    $url = 'https://finger-vote-2021.herokuapp.com?token=' . $token;
+
+    $this->notify(new ResetPasswordNotification($url));
   }
 }
