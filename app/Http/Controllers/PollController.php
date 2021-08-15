@@ -8,6 +8,7 @@ use App\Models\Voter;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon; // managing date and time in PHP much easier
+use Illuminate\Support\Facades\Storage;
 
 class PollController extends Controller
 {
@@ -56,7 +57,8 @@ class PollController extends Controller
 
     return response()->json([
       "status" => "success",
-      "data" => $poll, $pollOption
+      "poll" => $poll,
+      "pollOption" => $pollOption
     ]);
   }
 
@@ -70,8 +72,21 @@ class PollController extends Controller
       // create new uniq name of image
       $newImageName = time() . '.' . $request->image->extension();
 
-      // saving image to /public/image/polls directory
-      $request->image->move(public_path('images/polls'), $newImageName);
+      // upload poll image to Google drive/LARAVEL/images/polls
+      $dir = '/';
+      $recursive = true; // Get subdirectories also?
+      $contents = collect(Storage::disk('google')->listContents($dir, $recursive));
+
+      $dir = $contents->where('type', '=', 'dir')
+        ->where('filename', '=', 'polls')
+        ->first(); // There could be duplicate directory names!
+
+      if (!$dir) {
+        return 'Directory does not exist!';
+      }
+
+      // upload file to google drive LARAVEL/images/polls
+      Storage::disk("google")->putFileAs($dir['path'], $request->file('image'), $newImageName);
     } else {
       return 'no image';
     }
@@ -97,12 +112,32 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found"
-      ]);
+      ], 404);
+    }
+
+    $filename = $poll->image_path;
+    $dir = '/';
+    $recursive = true; // Get subdirectories also?
+    $contents = collect(Storage::disk('google')->listContents($dir, $recursive));
+
+    $file = $contents
+      ->where('type', '=', 'file')
+      ->where('filename', '=', pathinfo($filename, PATHINFO_FILENAME))
+      ->where('extension', '=', pathinfo($filename, PATHINFO_EXTENSION))
+      ->first(); // there can be duplicate file names!
+    //return $file; // array with file info
+
+
+    if (!$file) {
+      $imageURL = ''; // user doesn't have profile image
+    } else {
+      $imageURL = Storage::disk('google')->url($file['path']); // create URL for user's profile image
     }
 
     return response()->json([
       "status" => "success",
-      "data" => $poll
+      "data" => $poll,
+      "imageURL" => $imageURL
     ]);
   }
 
@@ -120,7 +155,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found"
-      ]);
+      ], 404);
     }
 
     $user = auth()->user();
@@ -130,7 +165,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "user can't update poll"
-      ]);
+      ], 404);
     }
 
     $poll->update($request->all()); // update  data
@@ -165,7 +200,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
-      ]);
+      ], 404);
     }
 
     $poll->delete();
@@ -190,7 +225,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
-      ]);
+      ], 404);
     }
 
     return response()->json([
@@ -210,7 +245,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
-      ]);
+      ], 404);
     }
 
     return response()->json([
@@ -227,7 +262,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
-      ]);
+      ], 404);
     }
 
     return response()->json([
@@ -244,7 +279,7 @@ class PollController extends Controller
       return response()->json([
         "status" => "error",
         "message" => "poll not found",
-      ]);
+      ], 404);
     }
 
     return response()->json([

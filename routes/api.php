@@ -38,6 +38,7 @@ Route::get('/v1/poll-options/{id}', [PollOptionController::class, 'show']); // g
 Route::get('/v1/polls/user-poll/{id}', [PollController::class, 'otherUserPoll']); // get poll by id user ////////////////////////////////
 Route::post('/v1/forgot-password', [NewPasswordController::class, 'forgotPassword']);
 Route::post('/v1/reset-password', [NewPasswordController::class, 'reset']);
+
 // routes which contain {} (wildcard) have to put in back order
 
 
