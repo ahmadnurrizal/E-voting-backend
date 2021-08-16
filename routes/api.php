@@ -54,10 +54,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
   Route::post('/v1/polls/upload-image', [PollController::class, 'uploadImage']); // upload poll image //////////////////////////////////////////////
   Route::delete('/v1/users', [AuthController::class, 'destroy']); // delete user by id user's login ///////////////////////////////////////
   Route::post('/v1/polls', [PollController::class, 'store']); // create poll ///////////////////////////////////////////////
-  Route::put('/v1/polls/{id}', [PollController::class, 'update']); // update poll by id
-  Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']); // delete poll by id
-  Route::delete('/v1/polls/{id}/reset', [VoterController::class, 'destroy']); // delete voters by poll_id
+  Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']); // delete poll by id ///////////////////////////////////////
+  Route::delete('/v1/polls/{id}/reset', [VoterController::class, 'destroy']); // delete voters by poll_id //////////////////////////
   Route::post('/v1/polls/{id}/vote', [VoterController::class, 'store']); // vote option ////////////////////////////////////
+  Route::put('/v1/polls/{id}', [PollController::class, 'update']); // update poll by id
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
