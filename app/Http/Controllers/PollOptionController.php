@@ -114,7 +114,7 @@ class PollOptionController extends Controller
 
     return response()->json([
       "status" => "success",
-      "data" => $pollOption,
+      "data" => $pollOptions,
       "imageURL" => $imageURL
     ]);
   }
