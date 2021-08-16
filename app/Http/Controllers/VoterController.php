@@ -46,6 +46,15 @@ class VoterController extends Controller
       ]);
     }
 
+    $voter = Voter::where('poll_id', $id)
+      ->where('user_id', $user->id)->first();
+
+    if ($voter) {
+      return response()->json([
+        "message" => "Sorry, you have alredy voted this poll",
+      ]);
+    }
+
     $voter = Voter::create([
       'user_id' => $user->id,
       'poll_id' => $id,
@@ -98,8 +107,12 @@ class VoterController extends Controller
    * @param  \App\Models\Voter  $voter
    * @return \Illuminate\Http\Response
    */
-  public function destroy(Voter $voter)
+  public function destroy($id)
   {
-    //
+    Voter::where('poll_id', $id)->delete();
+    return response()->json([
+      "status" => "success",
+      "message" => "successfully reset poll"
+    ]);
   }
 }
