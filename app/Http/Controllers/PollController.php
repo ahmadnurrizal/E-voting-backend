@@ -219,7 +219,8 @@ class PollController extends Controller
    */
   public function discover($title)
   {
-    $poll = Poll::where('title', 'like', '%' . $title . '%')->get(); // search data by title
+    $poll = Poll::where('title', 'like', '%' . $title . '%')
+      ->where('status', 'public')->get(); // search data by title
 
     if ($poll->isEmpty()) {
       return response()->json([
@@ -239,7 +240,7 @@ class PollController extends Controller
     // according to count voters on current month
     $poll = Poll::withCount(['voters' => function ($query) {
       $query->whereMonth('created_at', Carbon::now()->month);
-    }])->orderBy('voters_count', 'DESC')->take(6)->get();
+    }])->where('status', 'public')->orderBy('voters_count', 'DESC')->take(6)->get();
 
     if ($poll->isEmpty()) {
       return response()->json([
@@ -256,7 +257,8 @@ class PollController extends Controller
 
   public function newest()
   {
-    $poll = Poll::orderBy('created_at', 'DESC')->take(6)->get();
+    $poll = Poll::orderBy('created_at', 'DESC')->take(6)
+      ->where('status', 'public')->get();
 
     if ($poll->isEmpty()) {
       return response()->json([

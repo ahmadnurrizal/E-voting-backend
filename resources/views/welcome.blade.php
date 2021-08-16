@@ -7,7 +7,7 @@
   <title>Document</title>
 </head>
 <body>
-  <img src="{{ $data }}" alt="kosong" width="200px">
+  <h1>Halooo guysss</h1>
 
 </body>
 </html>

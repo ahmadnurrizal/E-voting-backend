@@ -23,7 +23,7 @@ class PollFactory extends Factory
   public function definition()
   {
     $faker = \Faker\Factory::create('id_ID'); // more information : https://github.com/fzaninotto/Faker
-    $status = $faker->randomElement(['Opened', 'Closed']);
+    $status = $faker->randomElement(['public', 'private']);
     return [
       'title' => $faker->company,
       'description' => $faker->sentence($nbWords = 9, $variableNbWords = true),
