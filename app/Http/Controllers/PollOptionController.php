@@ -50,22 +50,8 @@ class PollOptionController extends Controller
       // create new uniq name of image
       $newImageName = time() . '.' . $request->image->extension();
 
-      // upload poll image to Google drive/LARAVEL/images/options
-      $dir = '/';
-      $recursive = true; // Get subdirectories also?
-      $contents = collect(Storage::disk('google')->listContents($dir, $recursive));
-
-      $dir = $contents->where('type', '=', 'dir')
-        ->where('filename', '=', 'options')
-        ->first(); // There could be duplicate directory names!
-
-      if (!$dir) {
-        return 'Directory does not exist!';
-      }
-
-      // upload file to google drive LARAVEL/images/polls
-      Storage::disk("google")->putFileAs($dir['path'], $request->file('image'), $newImageName);
-      sleep(1); // sleep 1 second to make sure newImageName is unique
+      // saving image to /public/image/options directory
+      $request->image->move(public_path('images/options'), $newImageName);
     } else {
       return 'no image';
     }
@@ -84,38 +70,18 @@ class PollOptionController extends Controller
    */
   public function show($id)
   {
-    $pollOptions = PollOption::where('poll_id', $id)->get();
+    $pollOption = PollOption::where('poll_id', $id)->get();
 
-    if ($pollOptions->isEmpty()) {
+    if ($pollOption->isEmpty()) {
       return response()->json([
         "status" => "error",
         "message" => "poll option not found"
       ]);
     }
 
-    $dir = '/';
-    $recursive = true; // Get subdirectories also?
-    $contents = collect(Storage::disk('google')->listContents($dir, $recursive));
-
-    foreach ($pollOptions as $pollOption) {
-      $filename = $pollOption->image_path;
-      // dd($filename);
-      $file = $contents
-        ->where('type', '=', 'file')
-        ->where('filename', '=', pathinfo($filename, PATHINFO_FILENAME))
-        ->where('extension', '=', pathinfo($filename, PATHINFO_EXTENSION))->first();
-
-      if (!$file) {
-        $imageURL = ''; // user doesn't have profile image
-      } else {
-        $imageURL[] = Storage::disk('google')->url($file['path']); // create URL for user's profile image
-      }
-    }
-
     return response()->json([
       "status" => "success",
-      "data" => $pollOptions,
-      "imageURL" => $imageURL
+      "data" => $pollOption
     ]);
   }
 
