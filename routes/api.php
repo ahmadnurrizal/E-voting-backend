@@ -1,5 +1,7 @@
 <?php
 
+// require 'vendor/autoload.php';
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NewPasswordController;
 use App\Models\Poll;
@@ -9,6 +11,8 @@ use App\Http\Controllers\VoterController;
 use App\Models\PollOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -48,10 +52,33 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
   Route::post('/v1/logout', [AuthController::class, 'logout']); // logout //////////////////////////////////////////////
   Route::get('/v1/user', [AuthController::class, 'userShow']); // get user by id user's login //////////////////////////////////
   Route::get('/v1/user-poll', [PollController::class, 'userPoll']); // get all poll created by id user's login /////////////////////////////
-  Route::post('/v1/users', [AuthController::class, 'update']); // update user by id user's login /////////////////////////////////
+  Route::put('/v1/users', [AuthController::class, 'update']); // update user by id user's login /////////////////////////////////
   Route::put('/v1/users/change-password', [AuthController::class, 'changePassword']); // change password by id user's login ////////////////////////////////
-  Route::post('/v1/poll-options/upload-image', [PollOptionController::class, 'uploadImage']); // upload poll option image //////////////////////////////////
-  Route::post('/v1/polls/upload-image', [PollController::class, 'uploadImage']); // upload poll image //////////////////////////////////////////////
+  Route::post('/v1/upload-image', function (Request $request) {
+    $request->validate([
+      'image' => 'mimes:png,jpg,jpeg|max:1024,' // max size = 1024 kb, accepted formats : png,jpg,jpeg
+    ]);
+
+    $image = $request->file('image');
+    $file_path = $image->getPathName();
+    $client = new \GuzzleHttp\Client();
+    $response = $client->request('POST', 'https://api.imgur.com/3/image', [
+      'headers' => [
+        'authorization' => 'Client-ID ' . env('IMGUR_CLIENT_ID'),
+        'content-type' => 'application/x-www-form-urlencoded',
+      ],
+      'form_params' => [
+        'image' => base64_encode(file_get_contents($request->file('image')->path($file_path)))
+      ],
+    ]);
+    $data = json_decode($response->getBody());
+
+    return response()->json([
+      "status" => "success",
+      "imageURL" => $data->data->link
+    ]);
+  });
+
   Route::delete('/v1/users', [AuthController::class, 'destroy']); // delete user by id user's login ///////////////////////////////////////
   Route::post('/v1/polls', [PollController::class, 'store']); // create poll ///////////////////////////////////////////////
   Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']); // delete poll by id ///////////////////////////////////////
