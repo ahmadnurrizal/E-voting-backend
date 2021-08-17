@@ -40,28 +40,6 @@ class PollOptionController extends Controller
     // return PollOption::create($request->all()); // create data
   }
 
-  public function uploadImage(Request $request)
-  {
-    $request->validate([
-      'image' => 'mimes:png,jpg,jpeg|max:1024,' // max size = 1024 kb, accepted formats : png,jpg,jpeg
-    ]);
-
-    if ($request->hasFile('image')) {
-      // create new uniq name of image
-      $newImageName = time() . '.' . $request->image->extension();
-
-      // saving image to /public/image/options directory
-      $request->image->move(public_path('images/options'), $newImageName);
-    } else {
-      return 'no image';
-    }
-
-    return response()->json([
-      "status" => "success",
-      "data" => $newImageName
-    ]);
-  }
-
   /**
    * Display the specified resource.
    *

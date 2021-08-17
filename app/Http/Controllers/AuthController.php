@@ -98,34 +98,12 @@ class AuthController extends Controller
 
     $request->validate([
       'email' => [
-        'required',
-        Rule::unique('users')->ignore($user->id), // uunique email and ignore email for users itself
+        'required', Rule::unique('users')->ignore($user->id), // uunique email and ignore email for users itself
       ],
-      'image' => 'mimes:png,jpg,jpeg|max:1024,' // max size = 1024 kb, accepted formats : png,jpg,jpeg
     ]);
-
-    if ($request->hasFile('image')) {
-      $exist = File::exists(public_path('images/profils/' . $user->profil_path)); // checking an old image. return true/false
-      if ($exist && $user->profil_path != '') {
-        unlink('images/profils/' . $user->profil_path); // remove old image
-      }
-      // create new uniq name of image
-      $newImageName = time() . '-' . $id . '.' . $request->image->extension();
-
-      // saving image to /public/image/profils directory
-      $request->image->move(public_path('images/profils'), $newImageName);
-      $request->profil_path = $newImageName;
-    } else {
-      $newImageName = $user->profil_path;
-    }
 
     // update all request
     $user->update($request->all());
-
-    // manual update because we need to process first then input to database
-    $user->update([
-      'profil_path' => $newImageName,
-    ]);
 
     return response()->json([
       "status" => "success",

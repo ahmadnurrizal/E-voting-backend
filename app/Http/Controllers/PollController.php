@@ -8,7 +8,7 @@ use App\Models\Voter;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon; // managing date and time in PHP much easier
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage;;
 
 class PollController extends Controller
 {
@@ -52,38 +52,15 @@ class PollController extends Controller
 
     foreach ($data['poll_options'] as $option) {
       $option['poll_id'] = $poll->id;
-      $pollOption[] = PollOption::create($option);
+      $pollOptions[] = PollOption::create($option);
     }
 
     return response()->json([
       "status" => "success",
       "poll" => $poll,
-      "pollOption" => $pollOption
+      "pollOption" => $pollOptions
     ]);
   }
-
-  public function uploadImage(Request $request)
-  {
-    $request->validate([
-      'image' => 'mimes:png,jpg,jpeg|max:1024,' // max size = 1024 kb, accepted formats : png,jpg,jpeg
-    ]);
-
-    if ($request->hasFile('image')) {
-      // create new uniq name of image
-      $newImageName = time() . '.' . $request->image->extension();
-
-      // saving image to /public/image/polls directory
-      $request->image->move(public_path('images/polls'), $newImageName);
-    } else {
-      return 'no image';
-    }
-
-    return response()->json([
-      "status" => "success",
-      "data" => $newImageName
-    ]);
-  }
-
 
   /**
    * Display the specified resource.
