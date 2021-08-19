@@ -273,6 +273,9 @@ class PollController extends Controller
         $data["3"] >> count of option C
         dst
     */
-    return $data;
+    return response()->json([
+      "status" => "success",
+      "data" => $data
+    ]);
   }
 }
