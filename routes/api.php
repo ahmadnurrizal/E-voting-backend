@@ -52,14 +52,18 @@ Route::post('/v1/forgot-password', [NewPasswordController::class, 'forgotPasswor
 Route::post('/v1/reset-password', [NewPasswordController::class, 'reset']); // reset password
 
 Route::get('/v1/all', function () {
-  dd('kkk');
-  $poll = Cache::remember('polls', 5, function () {
-    return Poll::all();
-  });
-  // $user = User::all();
-  // $voter = Voter::all();
+  if ($poll = Redis::get('polls.all')) {
+    return $poll;
+  }
 
-  echo $poll;
+  // get all post
+  $poll = Poll::all();
+
+  // store into redis
+  Redis::set('polls.all', $poll);
+
+  // return all posts
+  return $poll;
 });
 // routes which contain {} (wildcard) have to put in back order
 
