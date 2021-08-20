@@ -27,6 +27,6 @@ class PollTableSeeder extends Seeder
     // Using Magic Methods
     Poll::factory()
       ->hasPollOptions(3) // create 3 pollOption records each poll record
-      ->count(100)->create(); // create 100 poll records
+      ->count(1000)->create(); // create 100 poll records
   }
 }

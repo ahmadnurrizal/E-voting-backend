@@ -9,9 +9,17 @@ use App\Http\Controllers\PollController;
 use App\Http\Controllers\PollOptionController;
 use App\Http\Controllers\VoterController;
 use App\Models\PollOption;
+use App\Models\Voter;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon; // managing date and time in PHP much easier
+// use Illuminate\Support\Facades\Redis;
+use Performance\Performance;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
+
 
 
 /*
@@ -43,6 +51,16 @@ Route::get('/v1/polls/user-poll/{id}', [PollController::class, 'otherUserPoll'])
 Route::post('/v1/forgot-password', [NewPasswordController::class, 'forgotPassword']); // send verivication email and get token
 Route::post('/v1/reset-password', [NewPasswordController::class, 'reset']); // reset password
 
+Route::get('/v1/all', function () {
+  dd('kkk');
+  $poll = Cache::remember('polls', 5, function () {
+    return Poll::all();
+  });
+  // $user = User::all();
+  // $voter = Voter::all();
+
+  echo $poll;
+});
 // routes which contain {} (wildcard) have to put in back order
 
 
