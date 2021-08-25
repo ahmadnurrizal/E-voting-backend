@@ -42,8 +42,7 @@ Route::get('/v1/users/{id}', [AuthController::class, 'show']); // get user by id
 Route::get('/v1/poll-options/{id}', [PollOptionController::class, 'show']); // get poll options by poll id ///////////////////////////////////
 Route::get('/v1/polls/user-poll/{id}', [PollController::class, 'otherUserPoll']); // get poll by id user ////////////////////////////////
 Route::post('/v1/forgot-password', [NewPasswordController::class, 'forgotPassword']); // send verivication email and get token
-Route::post('/v1/reset-password', [NewPasswordController::class, 'reset']); // reset password
-///////////////////////
+Route::post('/v1/reset-password', [NewPasswordController::class, 'reset']); // reset password ///////////////////////
 // routes which contain {} (wildcard) have to put in back order
 
 
@@ -79,7 +78,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
             "imageURL" => $data->data->link
         ]);
     });
-
     Route::delete('/v1/users', [AuthController::class, 'destroy']); // delete user by id user's login ///////////////////////////////////////
     Route::post('/v1/polls', [PollController::class, 'store']); // create poll ///////////////////////////////////////////////
     Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']); // delete poll by id ///////////////////////////////////////

@@ -20,7 +20,7 @@ class CreatePollsTable extends Migration
             $table->string('description');
             $table->date('deadline');
             $table->string('status');
-            $table->integer('number_voter');
+            $table->integer('number_voter')->nullable();
             $table->string('image_path')->nullable();
             $table->timestamps(); // automaticaly add colomn created_at & updated_at
         });
