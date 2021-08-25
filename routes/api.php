@@ -5,6 +5,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NewPasswordController;
 use App\Models\Poll;
+use App\Models\Voter;
 use App\Http\Controllers\PollController;
 use App\Http\Controllers\PollOptionController;
 use App\Http\Controllers\VoterController;
@@ -27,7 +28,7 @@ use Illuminate\Support\Facades\Http;
 
 // Route::resource('polls', PollController::class);
 
-// Public Routes 
+// Public Routes
 Route::post('/v1/register', [AuthController::class, 'register']); // register ///////////////////////////////////////
 Route::post('/v1/login', [AuthController::class, 'login']); // login //////////////////////////////////////////////
 Route::get('/v1/polls', [PollController::class, 'index']); // get all poll
@@ -42,51 +43,51 @@ Route::get('/v1/poll-options/{id}', [PollOptionController::class, 'show']); // g
 Route::get('/v1/polls/user-poll/{id}', [PollController::class, 'otherUserPoll']); // get poll by id user ////////////////////////////////
 Route::post('/v1/forgot-password', [NewPasswordController::class, 'forgotPassword']); // send verivication email and get token
 Route::post('/v1/reset-password', [NewPasswordController::class, 'reset']); // reset password
-
+///////////////////////
 // routes which contain {} (wildcard) have to put in back order
 
 
 
 // Protected Routes (need a valid token to access)
 Route::group(['middleware' => ['auth:sanctum']], function () {
-  Route::post('/v1/logout', [AuthController::class, 'logout']); // logout //////////////////////////////////////////////
-  Route::get('/v1/user', [AuthController::class, 'userShow']); // get user by id user's login //////////////////////////////////
-  Route::get('/v1/user-poll', [PollController::class, 'userPoll']); // get all poll created by id user's login /////////////////////////////
-  Route::put('/v1/users', [AuthController::class, 'update']); // update user by id user's login /////////////////////////////////
-  Route::put('/v1/users/change-password', [AuthController::class, 'changePassword']); // change password by id user's login ////////////////////////////////
-  Route::post('/v1/upload-image', function (Request $request) {
-    $request->validate([
-      'image' => 'mimes:png,jpg,jpeg|max:1024,' // max size = 1024 kb, accepted formats : png,jpg,jpeg
-    ]);
+    Route::post('/v1/logout', [AuthController::class, 'logout']); // logout //////////////////////////////////////////////
+    Route::get('/v1/user', [AuthController::class, 'userShow']); // get user by id user's login //////////////////////////////////
+    Route::get('/v1/user-poll', [PollController::class, 'userPoll']); // get all poll created by id user's login /////////////////////////////
+    Route::put('/v1/users', [AuthController::class, 'update']); // update user by id user's login /////////////////////////////////
+    Route::put('/v1/users/change-password', [AuthController::class, 'changePassword']); // change password by id user's login ////////////////////////////////
+    Route::post('/v1/upload-image', function (Request $request) {
+        $request->validate([
+            'image' => 'mimes:png,jpg,jpeg|max:1024,' // max size = 1024 kb, accepted formats : png,jpg,jpeg
+        ]);
 
-    $image = $request->file('image');
-    $file_path = $image->getPathName();
-    $client = new \GuzzleHttp\Client();
-    $response = $client->request('POST', 'https://api.imgur.com/3/image', [
-      'headers' => [
-        'authorization' => 'Client-ID ' . env('IMGUR_CLIENT_ID'),
-        'content-type' => 'application/x-www-form-urlencoded',
-      ],
-      'form_params' => [
-        'image' => base64_encode(file_get_contents($request->file('image')->path($file_path)))
-      ],
-    ]);
-    $data = json_decode($response->getBody());
+        $image = $request->file('image');
+        $file_path = $image->getPathName();
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('POST', 'https://api.imgur.com/3/image', [
+            'headers' => [
+                'authorization' => 'Client-ID ' . env('IMGUR_CLIENT_ID'),
+                'content-type' => 'application/x-www-form-urlencoded',
+            ],
+            'form_params' => [
+                'image' => base64_encode(file_get_contents($request->file('image')->path($file_path)))
+            ],
+        ]);
+        $data = json_decode($response->getBody());
 
-    return response()->json([
-      "status" => "success",
-      "imageURL" => $data->data->link
-    ]);
-  });
+        return response()->json([
+            "status" => "success",
+            "imageURL" => $data->data->link
+        ]);
+    });
 
-  Route::delete('/v1/users', [AuthController::class, 'destroy']); // delete user by id user's login ///////////////////////////////////////
-  Route::post('/v1/polls', [PollController::class, 'store']); // create poll ///////////////////////////////////////////////
-  Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']); // delete poll by id ///////////////////////////////////////
-  Route::delete('/v1/polls/{id}/reset', [VoterController::class, 'destroy']); // delete voters by poll_id //////////////////////////
-  Route::post('/v1/polls/{id}/vote', [VoterController::class, 'store']); // vote option ////////////////////////////////////
-  Route::put('/v1/polls/{id}', [PollController::class, 'update']); // update poll by id
+    Route::delete('/v1/users', [AuthController::class, 'destroy']); // delete user by id user's login ///////////////////////////////////////
+    Route::post('/v1/polls', [PollController::class, 'store']); // create poll ///////////////////////////////////////////////
+    Route::delete('/v1/polls/{id}', [PollController::class, 'destroy']); // delete poll by id ///////////////////////////////////////
+    Route::delete('/v1/polls/{id}/reset', [VoterController::class, 'destroy']); // delete voters by poll_id //////////////////////////
+    Route::post('/v1/polls/{id}/vote', [VoterController::class, 'store']); // vote option ////////////////////////////////////
+    Route::put('/v1/polls/{id}', [PollController::class, 'update']); // update poll by id
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-  return $request->user();
+    return $request->user();
 });

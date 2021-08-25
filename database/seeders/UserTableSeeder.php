@@ -7,13 +7,13 @@ use App\Models\User;
 
 class UserTableSeeder extends Seeder
 {
-  /**
-   * Run the database seeds.
-   *
-   * @return void
-   */
-  public function run()
-  {
-    User::factory()->count(200)->create(); // generate user table 100 records
-  }
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        User::factory()->count(200)->create(); // generate user table 100 records
+    }
 }
