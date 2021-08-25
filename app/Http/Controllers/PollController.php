@@ -49,7 +49,9 @@ class PollController extends Controller
         $data = $request->all();
         $data['user_id'] = $user->id; //auto fill user_id according on user who create
         $poll = Poll::create($data);
-
+        $poll->update([
+            'number_voter' => 0
+        ]);
         foreach ($data['poll_options'] as $option) {
             $option['poll_id'] = $poll->id;
             $pollOptions[] = PollOption::create($option);
@@ -99,34 +101,32 @@ class PollController extends Controller
             return response()->json([
                 "status" => "error",
                 "message" => "poll not found"
-            ], 404);
+            ]);
         }
 
         $user = auth()->user();
-        $user_id = $poll->user_id;
+        $data = $request->all();
 
-        if ($user_id != $user->id) { // check user can update poll or not (only user which create the poll can update)
+        if ($poll->user_id != $user->id) { // check user can update poll or not (only user which create the poll can update)
             return response()->json([
                 "status" => "error",
                 "message" => "user can't update poll"
-            ], 404);
+            ]);
         }
 
         $poll->update($request->all()); // update  data
 
-        $pollOption = PollOption::where('poll_id', '=', $id); // find pollOption by poll_id
-        // update poll-options table
-        $countOptions = 2; // just create 2 option
-        for ($i = 1; $i <= $countOptions; $i += 1) {
-            $pollOption->update([
-                'option' => $request->input("option{$i}"),
-                'image_path' => $request->input("image_path{$i}")
-                // 'poll_id' => $poll->id
+        foreach ($data['poll_options'] as $option) {
+            $pollOptions = PollOption::where('poll_id', $poll->id);
+            $pollOptions->update([
+                'option' => $option['option'],
+                'image_path' => $option['image_path']
             ]);
         }
+
         return response()->json([
             "status" => "success",
-            "data" => $poll
+            "data" => $poll, $data['poll_options']
         ]);
     }
 
