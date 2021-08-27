@@ -35,7 +35,6 @@ Route::get('/v1/polls', [PollController::class, 'index']); // get all poll
 Route::get('/v1/users', [AuthController::class, 'index']); // gell all user
 Route::get('/v1/polls/trending', [PollController::class, 'trending']); // get trending polls /////////////////////////////////////
 Route::get('/v1/polls/newest', [PollController::class, 'newest']); // get newst polls //////////////////////////////////
-Route::get('/v1/polls/{id}', [PollController::class, 'show']); // get poll by id ///////////////////////////////////////
 Route::get('/v1/polls/discover/{title}', [PollController::class, 'discover']); // get poll by title /////////////////////////////////////
 Route::get('/v1/polls/result/{id}', [PollController::class, 'result']); // get poll result by id ////////////////////////////////////////////
 Route::get('/v1/users/{id}', [AuthController::class, 'show']); // get user by id ////////////////////////////////////
@@ -84,6 +83,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/v1/polls/{id}/reset', [VoterController::class, 'destroy']); // delete voters by poll_id //////////////////////////
     Route::post('/v1/polls/{id}/vote', [VoterController::class, 'store']); // vote option ////////////////////////////////////
     Route::put('/v1/polls/{id}', [PollController::class, 'update']); // update poll by id
+    Route::get('/v1/polls/{id}', [PollController::class, 'show']); // get poll by id ///////////////////////////////////////
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

@@ -74,6 +74,9 @@ class PollController extends Controller
     {
         $poll = Poll::find($id); // find data by id
 
+        $user = auth()->user();
+        $voted = Voter::where('poll_id', $id)
+            ->where('user_id', $user->id)->exists();
         if (!$poll) {
             return response()->json([
                 "status" => "error",
@@ -83,7 +86,8 @@ class PollController extends Controller
 
         return response()->json([
             "status" => "success",
-            "data" => $poll
+            "data" => $poll,
+            "voted" => $voted
         ]);
     }
 
