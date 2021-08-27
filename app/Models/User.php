@@ -62,8 +62,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function sendPasswordResetNotification($token)
     {
-
-        $url = 'http://finger-vote-2021.herokuapp.com/api/v1/reset-password?token=' . $token;
+        $url = 'http://fingervote.herokuapp.com/api/v1/reset-password?token=' . $token;
 
         $this->notify(new ResetPasswordNotification($url));
     }
