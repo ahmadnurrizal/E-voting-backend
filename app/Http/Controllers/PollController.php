@@ -143,6 +143,14 @@ class PollController extends Controller
     public function destroy($id)
     {
         $poll = Poll::find($id);
+        $user = auth()->user();
+
+        if ($poll->user_id != $user->id) { // check user can delete poll or not (only user which create the poll can delete)
+            return response()->json([
+                "status" => "error",
+                "message" => "user can't delete poll"
+            ]);
+        }
 
         if (!$poll) {
             return response()->json([

@@ -112,6 +112,14 @@ class VoterController extends Controller
      */
     public function destroy($id)
     {
+        $user = auth()->user();
+        $poll = Poll::find($id);
+        if ($poll->user_id != $user->id) { // check user can reset poll or not (only user which create the poll can reset)
+            return response()->json([
+                "status" => "error",
+                "message" => "user can't reset poll"
+            ]);
+        }
         Voter::where('poll_id', $id)->delete();
         return response()->json([
             "status" => "success",
