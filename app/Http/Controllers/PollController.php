@@ -119,18 +119,19 @@ class PollController extends Controller
         }
 
         $poll->update($request->all()); // update  data
-
+        $pollOptions = PollOption::where('poll_id', $poll->id)->get();
+        $i = 0;
         foreach ($data['poll_options'] as $option) {
-            $pollOptions = PollOption::where('poll_id', $poll->id);
-            $pollOptions->update([
+            $pollOptions[$i]->update([
                 'option' => $option['option'],
                 'image_path' => $option['image_path']
             ]);
+            $i++;
         }
 
         return response()->json([
             "status" => "success",
-            "data" => $poll, $data['poll_options']
+            "data" => $poll, $pollOptions
         ]);
     }
 
