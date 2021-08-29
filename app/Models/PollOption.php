@@ -7,21 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class PollOption extends Model
 {
-  use HasFactory;
+    use HasFactory;
 
-  protected $fillable = [
-    'poll_id',
-    'option',
-    'image_path'
-  ];
+    protected $fillable = [
+        'poll_id',
+        'option',
+        'image_path'
+    ];
 
-  public function voters()
-  {
-    return $this->hasMany(Voter::class); // pollOption has many voters
-  }
+    public $timestamps = false;
 
-  public function poll()
-  {
-    return $this->belongsTo(Poll::class);
-  }
+    public function voters()
+    {
+        return $this->hasMany(Voter::class); // pollOption has many voters
+    }
+
+    public function poll()
+    {
+        return $this->belongsTo(Poll::class);
+    }
 }
