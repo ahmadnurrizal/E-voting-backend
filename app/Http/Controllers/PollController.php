@@ -119,7 +119,8 @@ class PollController extends Controller
         }
 
         $poll->update($request->all()); // update  data
-        $pollOptions = PollOption::where('poll_id', $poll->id)->get();
+        $pollOptions = PollOption::where('poll_id', $poll->id)->orderBy('id')->get();
+
         $i = 0;
         foreach ($data['poll_options'] as $option) {
             $pollOptions[$i]->update([
