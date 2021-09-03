@@ -17,7 +17,7 @@ class CreatePollsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('title');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->date('deadline');
             $table->string('status');
             $table->integer('number_voter')->nullable();
