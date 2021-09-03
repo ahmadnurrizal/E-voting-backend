@@ -40,7 +40,6 @@ class PollController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            'description' => 'required',
             'deadline' => 'required',
         ]);
 
