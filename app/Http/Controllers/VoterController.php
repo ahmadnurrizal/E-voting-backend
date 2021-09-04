@@ -114,6 +114,7 @@ class VoterController extends Controller
     {
         $user = auth()->user();
         $poll = Poll::find($id);
+        $poll->update(["number_voter" => 0]);
         if ($poll->user_id != $user->id) { // check user can reset poll or not (only user which create the poll can reset)
             return response()->json([
                 "status" => "error",
