@@ -27,7 +27,8 @@ class PollFactory extends Factory
         return [
             'title' => $faker->company,
             'description' => $faker->sentence($nbWords = 9, $variableNbWords = true),
-            'deadline' => $faker->date($format = 'Y-m-d', $max = 'now'),
+            // 'deadline' => $faker->date($format = 'Y-m-d', $max = 'now'),
+            'deadline' => '2021/10/1',
             'status' => $status,
             'number_voter' => 0,
             'user_id' => rand(1, User::count()) // User::count() ==> return User count of User Table
